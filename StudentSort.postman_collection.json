@@ -1,0 +1,81 @@
+{
+	"info": {
+		"_postman_id": "2ed38fc5-1209-40e9-9a00-76a08c597b50",
+		"name": "StudentSort",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SortStudentsToJSON",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Vilius/Downloads/testData.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/students/json?sortType=merge",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"json"
+					],
+					"query": [
+						{
+							"key": "sortType",
+							"value": "merge"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SortStudentsToFile",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Vilius/Downloads/testData.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/students/file?sortType=bubble",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"students",
+						"file"
+					],
+					"query": [
+						{
+							"key": "sortType",
+							"value": "bubble"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
