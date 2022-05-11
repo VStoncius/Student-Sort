@@ -20,11 +20,14 @@ import java.util.*;
 @Service
 public class StudentSortServiceImpl implements StudentSortService {
 
-    private static final String DEFAULT = "MERGE";
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper;
+
+    public StudentSortServiceImpl(ObjectMapper mapper) {
+        this.mapper = new ObjectMapper();
+    }
 
     @Override
-    public String sortStudentsToFile(MultipartFile file, String sortType) throws IOException {
+    public byte[] sortStudentsToFile(MultipartFile file, String sortType) throws IOException {
         InputStream inputStream = file.getInputStream();
 
         if (EnumUtils.findEnumInsensitiveCase(SortType.class, sortType) == null) {
@@ -42,7 +45,7 @@ public class StudentSortServiceImpl implements StudentSortService {
                 data = bubbleSort(data);
         }
 
-        return writeToFileFormat(data);
+        return writeToFileFormat(data).getBytes();
     }
 
     private String writeToFileFormat(Map<String, Double> data) {
@@ -59,13 +62,12 @@ public class StudentSortServiceImpl implements StudentSortService {
     @Override
     public String sortStudentsToJson(MultipartFile file, String sortType) throws IOException {
         InputStream inputStream = file.getInputStream();
+        Map<String, Double> data = readFile(inputStream);
 
         if (EnumUtils.findEnumInsensitiveCase(SortType.class, sortType) == null) {
             sortType = DEFAULT;
         }
 
-        Map<String, Double> data = readFile(inputStream);
-        System.out.println(data);
         Map<String, Double> sorted = null;
         switch (SortType.valueOf(sortType.toUpperCase())) {
             case MERGE:
@@ -80,10 +82,9 @@ public class StudentSortServiceImpl implements StudentSortService {
     }
 
     private String formatToJson(Map<String, Double> data) {
-        ObjectMapper objectMapper = new ObjectMapper();
         String json = null;
         try {
-            json = objectMapper.writeValueAsString(data);
+            json = mapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -110,8 +111,8 @@ public class StudentSortServiceImpl implements StudentSortService {
     }
 
     private Map<String, Double> bubbleSort(Map<String, Double> data) {
-        Instant start = Instant.now();
 
+        Instant start = Instant.now();
         boolean sorted = false;
 
         List<Map.Entry<String, Double>> list
@@ -132,11 +133,12 @@ public class StudentSortServiceImpl implements StudentSortService {
             }
         }
 
-        HashMap<String, Double> map
-                = new LinkedHashMap<String, Double>();
+        HashMap<String, Double> map = new LinkedHashMap<String, Double>();
+
         for (Map.Entry<String, Double> aa : list) {
             map.put(aa.getKey(), aa.getValue());
         }
+
         Instant finish = Instant.now();
         map.put("Entities sorted", (double) list.size());
         map.put("Elapsed Time", (double) Duration.between(start, finish).toNanos());
@@ -146,15 +148,13 @@ public class StudentSortServiceImpl implements StudentSortService {
     private Map<String, Double> mergeSort(Map<String, Double> data) {
         Instant start = Instant.now();
 
-        List<Map.Entry<String, Double>> list
-                = new LinkedList<Map.Entry<String, Double>>(
+        List<Map.Entry<String, Double>> list = new LinkedList<Map.Entry<String, Double>>(
                 data.entrySet());
 
-        list.sort((i1, //this states that it uses a type of merge sort (hope this is acceptable :)
-                   i2) -> i1.getValue().compareTo(i2.getValue()));
+        list.sort((i1, i2) -> i1.getValue().compareTo(i2.getValue()));  //this states that it uses a type of merge sort (hope this is acceptable :)
 
-        HashMap<String, Double> map
-                = new LinkedHashMap<String, Double>();
+        HashMap<String, Double> map = new LinkedHashMap<String, Double>();
+
         for (Map.Entry<String, Double> aa : list) {
             map.put(aa.getKey(), aa.getValue());
         }

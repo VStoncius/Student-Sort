@@ -1,7 +1,6 @@
 package com.demo.Student.Sort.controllers;
 
 import com.demo.Student.Sort.services.StudentSortService;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 @RestController
@@ -23,7 +21,7 @@ public class StudentSortController {
     public @ResponseBody byte[] sortStudentsToFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam String sortType) throws IOException {
-        return studentSortService.sortStudentsToFile(file, sortType).getBytes();
+        return studentSortService.sortStudentsToFile(file, sortType);
     }
 
     @PostMapping(value = "/json",
